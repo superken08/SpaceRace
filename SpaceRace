@@ -1,0 +1,448 @@
+package spacerace;
+
+import processing.core.PApplet;
+
+import java.util.ArrayList;
+
+import java.util.List;
+import java.util.Random;
+
+
+//NOTE FIX ADVANCED STARS
+@SuppressWarnings("serial")
+public class SpaceRace extends PApplet {
+	Random generator = new Random();
+	/*State Menu
+	 * State 0: Play/Exit Menu
+	 * State 1: Difficulty Menu
+	 * State 2: Easy Game
+	 * State 3: Medium Game
+	 * State 4: Hard Game
+	 * POSSIBLE State 5: Game Over Menu
+	 */
+	public int state = 0;
+	
+	List<Asteroid> asteroids = new ArrayList<>();
+	
+	public int x = 0;
+	public int y = 0;
+	public int speed = 10;
+	public int score = 0;
+	public int advancedStarX;
+	public int advancedStarY;
+	
+	
+	public boolean moveUp;
+	public boolean moveDown;
+	
+	public float asteroidX = 700;
+	public float asteroid1Y = generator.nextInt(30);
+	public float asteroid2Y = generator.nextInt(100);
+	public float asteroid3Y = generator.nextInt(200);
+	public float playButtonX;
+	public float playButtonY;
+	
+	public float starX;
+	public float starY;
+	
+	public int[] playButtonColor = {0, 138, 0};
+	public int[] exitButtonColor = {0,138,0};
+	public int[] easyButtonColor = {0,138,0};
+	public int[] mediumButtonColor = {0,138,0};
+	public int[] hardButtonColor = {0,138,0};
+	public int[] playAgainButton = {0, 138, 0};
+	
+	
+	
+	MainMenu menu = new MainMenu();
+	Spaceship spaceship = new Spaceship();
+
+	
+	Star star1 = new Star();
+	Star star2 = new Star();
+	Star star3 = new Star();
+	Star star4 = new Star();
+	Star star5 = new Star();
+	Star star6 = new Star();
+	Star star7 = new Star();
+	Star star8 = new Star();
+	Star star9 = new Star();
+	Star star10 = new Star();
+	Star star11= new Star();
+	Star star12 = new Star();
+	Star star13 = new Star();
+	Star star14 = new Star();
+	Star star15= new Star();
+	AdvancedStar aStar1 = new AdvancedStar();
+
+	
+	
+	
+	public void setup() {
+		size(800,600);
+		background(0,0,0);
+		playButtonX = 200;
+		playButtonY = 300;
+		star1.drawStar();
+		star2.drawStar();
+		star3.drawStar();
+		star4.drawStar();
+		star5.drawStar();
+		star6.drawStar();
+		star7.drawStar();
+		star8.drawStar();
+		star9.drawStar();
+		star10.drawStar();
+		star11.drawStar();
+		star12.drawStar();
+		star13.drawStar();
+		star14.drawStar();
+		star15.drawStar();
+
+
+	}
+	
+	public void update() {
+		for (int i = 0; i < asteroids.size(); i++) {
+			if (asteroids.get(i).x < spaceship.x + 75
+					&& (asteroids.get(i).y - 35 > spaceship.y - 20
+					//|| //asteroids.get(i).x < spaceship.x + 75
+					&& 
+					asteroids.get(i).y + 35 < spaceship.y + 70)) {
+				state = 5;
+			}
+		}
+	}
+
+	public void draw() {
+		if(state == 0){
+			
+			menu.drawMainMenu();
+			
+		}
+		if(state == 1){
+			menu.drawDifficultyMenu();
+		}
+		if(state == 2 || state == 3 || state == 4){
+			aStar1.drawAdvancedStar();
+			spaceship.drawSpaceship();
+			spaceship.move();
+			
+			for (int i = 0; i < asteroids.size(); i++) {
+				asteroids.get(i).drawAsteroid();
+			}
+			
+			update();
+		
+			text("Score: " + score, 0, 0, 500, 80);
+			
+		}
+		if(state == 5){
+			//I didn't feel like making a class
+			
+			background(0,0,0);
+			fill(255,255,255);
+			text("Game Over", 400, 200, 500, 100);
+			text("Score: " + score, 400, 300, 500, 100);
+			
+			
+			
+			
+			fill(0, playAgainButton[1], 0);
+			rect(400, 400, 300, 100);
+			if(mouseX > 400 && mouseX < 700 && mouseY > 400 && mouseY < 490){
+				playAgainButton[1] = 0;
+			}else if(!(mouseX > 400 && mouseX < 700 && mouseY > 400 && mouseY < 490)){
+				playAgainButton[1] = 138;
+			}
+			fill(255,255,255);
+			text("Play Again",400, 400, 500, 90);
+			
+			
+		}
+	}
+	
+	public static void main(String _args[]) {
+		PApplet.main(new String[] { spacerace.SpaceRace.class.getName() });
+	}
+
+	public void mousePressed(){
+		if(state == 0 && mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY >playButtonY && mouseY < playButtonY + 100){
+			
+			state = 1;
+			System.out.println("Done");
+		}
+		if(state == 0 && mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY < playButtonY + 250 && mouseY > playButtonY + 150){
+			System.exit(0);
+		}
+		if(state == 1 && mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY > playButtonY - 180 && mouseY < playButtonY - 80){
+			for(int i = 0; i < asteroids.size(); i++){
+				asteroids.remove(i);
+			}
+			state = 2;
+			asteroids.add(new Asteroid());
+			System.out.println("Easy Game Begin");
+		}
+		if(state == 1 && mouseX > playButtonX + 270 && mouseX < playButtonX + 570 && mouseY > playButtonY && mouseY < playButtonY + 100){
+			for(int i = 0; i < asteroids.size(); i++){
+				asteroids.remove(i);
+			}
+			state = 3;
+			asteroids.add(new Asteroid());
+			asteroids.add(new Asteroid());
+		}
+		if(state == 1 && mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY > playButtonY + 150 && mouseY < playButtonY + 250){
+			for(int i = 0; i < asteroids.size(); i++){
+				asteroids.remove(i);
+			}
+			state = 4;
+			asteroids.add(new Asteroid());
+			asteroids.add(new Asteroid());
+			asteroids.add(new Asteroid());
+		}
+		if(state == 5 && mouseX > 400 && mouseX < 700 && mouseY > 400 && mouseY < 490){
+			
+			state = 1;
+			
+			score = 0;
+			x = 600;
+			y = generator.nextInt(600);
+			for(int i = 0; i < asteroids.size(); i++){
+				asteroids.remove(i);
+			}
+		}
+		if(state == 1 && mouseX > playButtonX - 100 && mouseX < playButtonX + 100 && mouseY > playButtonY && mouseY < playButtonY + 100){
+			System.exit(0);
+		}
+		
+	}
+	public void keyPressed(){
+		if(key == 'w'){
+			moveUp = true;
+			
+		}
+		if(key == 's'){
+			moveDown = true;
+		}
+	}
+	public void keyReleased(){
+		if(key == 'w'){
+			moveUp = false;
+		}
+		if(key == 's'){
+			moveDown = false;
+		}
+	}
+	public class MainMenu{
+		public MainMenu(){
+			
+		}
+		public void drawMainMenu(){
+			
+
+		
+			fill(0,255,0);
+			stroke(255,0,0);
+			textSize(50);
+			text("Space", 300,0, 200,100);
+			text("Race", 300, 50, 200, 200);
+			
+			fill(playButtonColor[0], playButtonColor[1], playButtonColor[2]);
+			rect(playButtonX, playButtonY, 300,100);
+			
+			fill(255,255,255);
+			text("Play", playButtonX + 100, playButtonY, 300, 100);
+			
+			fill(exitButtonColor[0], exitButtonColor[1], exitButtonColor[2]);
+			rect(playButtonX, playButtonY + 150, 300, 100);
+			fill(255,255,255);
+			text("Exit", playButtonX + 100, playButtonY + 150, 300, 100);
+			
+			if(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY >playButtonY && mouseY < playButtonY + 100){
+				playButtonColor[0] = 0;
+				playButtonColor[1] = 0;
+				playButtonColor[2] = 0;	
+			}else if (!(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY >playButtonY && mouseY < playButtonY + 100)){
+				playButtonColor[0] = 0;
+				playButtonColor[1] = 138;
+				playButtonColor[2] = 0;
+			}if(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY < playButtonY + 250 && mouseY > playButtonY + 150){
+				exitButtonColor[1] = 0;
+			}else if(!(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY < playButtonY + 100 && mouseY > playButtonY)){
+				exitButtonColor[1] = 138;
+			}
+			
+			
+		}
+		public void drawDifficultyMenu(){
+			state = 1;
+			textSize(50);
+			background(0,0,0);
+			fill(255,255,255);
+			text("Difficulty", playButtonX, 0, 300, 100);
+			
+			fill(playButtonColor[0], easyButtonColor[1], playButtonColor[2]);
+			rect(playButtonX, playButtonY - 180, 300, 100);
+			fill(255,255,255);
+			text("Easy", playButtonX + 100, playButtonY - 180, 300,100);
+			
+			line(playButtonX + 300, playButtonY - 80, playButtonX + 370, playButtonY + 100);
+			
+			fill(playButtonColor[0], mediumButtonColor[1], playButtonColor[2]);
+			rect(playButtonX + 270, playButtonY, 300, 100);
+			fill(255,255,255);
+			text("Medium", playButtonX + 340, playButtonY, 300, 100);
+			
+			line(playButtonX + 270, playButtonY + 100, playButtonX, playButtonY + 150);
+			
+			fill(playButtonColor[0], hardButtonColor[1], playButtonColor[2]);
+			rect(playButtonX, playButtonY + 150, 300, 100);
+			fill(255,255,255);
+			text("Hard", playButtonX + 70, playButtonY + 150, 300, 100);
+			
+			fill(0,exitButtonColor[1], 0);
+			rect(playButtonX - 100, playButtonY, 200, 100);
+			fill(255,255,255);
+			text("Exit", playButtonX - 100, playButtonY, 200, 100);
+		
+			
+			
+			if(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY > playButtonY - 180 && mouseY < playButtonY - 80){
+				easyButtonColor[1] = 0;
+			}else if (!(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY > playButtonY - 180 && mouseY < playButtonY - 80)){
+				easyButtonColor[1] = 138;
+			}
+			if (mouseX > playButtonX + 270 && mouseX < playButtonX + 570 && mouseY > playButtonY && mouseY < playButtonY + 100){
+				mediumButtonColor[1] = 0;
+			}else if (!(mouseX > playButtonX + 270 && mouseX < playButtonX + 570 && mouseY > playButtonY && mouseY < playButtonY + 100)){
+				mediumButtonColor[1] = 138;
+			}
+			if(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY > playButtonY + 150 && mouseY < playButtonY + 250){
+				hardButtonColor[1] = 0;
+			}else if (!(mouseX > playButtonX && mouseX < playButtonX + 300 && mouseY > playButtonY + 150 && mouseY < playButtonY + 250)){
+				hardButtonColor[1] = 138;
+			}
+			if(mouseX > playButtonX - 100 && mouseX < playButtonX + 100 && mouseY > playButtonY && mouseY < playButtonY + 100){
+				exitButtonColor[1] = 0;
+			}
+			else if(!(mouseX > playButtonX - 100 && mouseX < playButtonX + 100 && mouseY > playButtonY && mouseY < playButtonY + 100)){
+				exitButtonColor[1] = 138;
+			}
+		}
+	}
+	
+	public class Spaceship{
+		
+		int x = 20;
+		int y = 30;
+		
+		public Spaceship(){
+			
+		}
+		public void drawSpaceship(){
+			background(0,0,0);
+			//Body color.
+	        stroke(0, 149, 185);
+	        fill(0, 149, 185);
+	        //Body
+	        rect(this.x, this.y, 75, 50);
+	        //front
+	        triangle(this.x + 75, this.y + 1, 100, this.y + 25, this.x + 75, this.y + 49);
+	        //window color
+	        fill(255, 255, 255);
+	        //window
+	        ellipse(this.x + 60, this.y + 25, 30, 15);
+	        //wings
+	        stroke(0, 149, 185);
+	        strokeWeight(3);
+	        fill(255, 255, 255);
+	        triangle(this.x + 25, this.y, this.x - 15, this.y - 25, this.x, this.y);
+	        triangle(this.x + 25, this.y + 50, this.x - 15, this.y + 75, this.x, this.y + 50);
+		}
+		public void move(){
+			if(moveUp){
+				this.y -= speed;
+				
+			}
+			if(moveDown){
+				this.y += speed;
+			}
+			if(this.y < 0 ){
+				this.y = 0;
+			}
+			
+			if(this.y > 550 ){
+				this.y = 550;
+			}
+		}
+	}
+	
+	public class Star{
+		
+		public Star(){
+			
+		}
+		public void drawStar(){
+			fill(255,255,255);
+			noStroke();
+			rect(generator.nextInt(800), generator.nextInt(300), 5,5);
+		}
+	}
+	public class Asteroid{
+		
+		public int x = 0;
+		public int y = 0;
+		
+		public Asteroid(){
+			this.x = 600;
+			this.y = generator.nextInt(600);
+		}
+		
+		public void drawAsteroid() {
+			
+			fill(96,96,96);
+			ellipse(this.x, this.y, 100, 70);
+			
+			this.x -= 8;
+			
+			if (generator.nextInt(2) == 0) {
+				this.y -= generator.nextInt(20);
+			} else {
+				this.y += generator.nextInt(20);
+			}
+			
+			
+			if(this.x < 0){
+				this.x = 700;
+				score += 100;
+				this.y = generator.nextInt(600);
+			}
+			
+			if (this.y < 0) {
+				this.y = 0;
+			}
+			
+			if (this.y > 600) {
+				this.y = 600;
+			}
+		
+		}
+		 
+	}
+
+	//This class never worked
+	public class AdvancedStar{
+		public AdvancedStar(){
+			
+		}
+		public void drawAdvancedStar(){
+			background(0,0,0);
+			advancedStarX = 700;
+			advancedStarY = generator.nextInt(600);
+			fill(255,255,255);
+			rect(advancedStarX, advancedStarY, 5,5);
+			advancedStarX -= 15;
+		}
+	}
+}
+
